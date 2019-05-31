@@ -6,8 +6,10 @@
   "author": "Benjamin Lannon <benjamin@lannonbr.com>",
   "license": "MIT",
   "dependencies": {
+    "dotenv": "^8.0.0",
     "moment": "^2.24.0",
     "puppeteer": "^1.17.0",
-    "string.prototype.matchall": "^3.0.1"
+    "string.prototype.matchall": "^3.0.1",
+    "twilio": "^3.31.1"
   }
 }

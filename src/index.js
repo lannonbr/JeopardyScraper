@@ -2,6 +2,10 @@ const puppeteer = require("puppeteer");
 const moment = require("moment");
 const matchAll = require("string.prototype.matchall");
 
+require("dotenv").config();
+
+const client = require("twilio")(process.env.SID, process.env.AUTH_TOKEN);
+
 (async () => {
   let time = moment();
   let year = time.format("YYYY");
@@ -14,7 +18,16 @@ const matchAll = require("string.prototype.matchall");
   // URL for the blog post for today
   let url = `https://thejeopardyfan.com/${year}/${month}/final-jeopardy-${date}.html`;
 
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({
+    args: [
+      // Required for Docker version of Puppeteer
+      "--no-sandbox",
+      "--disable-setuid-sandbox",
+      // This will write shared memory files into /tmp instead of /dev/shm,
+      // because Docker’s default for /dev/shm is 64MB
+      "--disable-dev-shm-usage"
+    ]
+  });
   const page = await browser.newPage();
   await page.goto(url);
   await page.waitFor(1000);
@@ -39,9 +52,16 @@ const matchAll = require("string.prototype.matchall");
 
   let todayStr = time.format("ll");
 
-  console.log(
-    `Today, ${todayStr}, James Holzhauer has made ${today} to a ${streak} day total of ${total}`
-  );
+  let msg = `Today, ${todayStr}, James Holzhauer has made ${today} to a ${streak} day total of ${total}`;
+
+  client.messages
+    .create({
+      body: msg,
+      from: process.env.FROM_NUM,
+      to: process.env.TO_NUM
+    })
+    .then(msg => console.log(msg.sid))
+    .done();
 
   browser.close();
 })();
