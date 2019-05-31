@@ -29,10 +29,12 @@ const matchAll = require("string.prototype.matchall");
   // Stop if it doesn't find any content
   if (content === undefined) return;
 
+  // Grab the two monetary values of today and the total winnings from the string.
   let [today, total] = [...matchAll(content, /(\$[\d,]*)/gm)]
     .slice(2)
     .map(match => match[0]);
 
+  // Grab streak number. Takes a string like "41-day" and converts it to the number 41.
   let streak = +[...matchAll(content, /(\d*-day)/gm)][0][0].slice(0, -4);
 
   let todayStr = time.format("ll");
