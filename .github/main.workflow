@@ -1,5 +1,5 @@
 workflow "Send message" {
-  on = "schedule(50 23 * * *)"
+  on = "schedule(4 * * * *)"
   resolves = ["scraper-twilio"]
 }
 
